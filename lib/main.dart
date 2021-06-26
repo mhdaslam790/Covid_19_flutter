@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myflutter1/constants.dart';
 import 'package:myflutter1/screens/home_screen.dart';
+import 'package:myflutter1/screens/loading_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
 
         ),
       ),
-      home:HomeScreen(),
+      home:LoadingScreen(),
     );
   }
 }

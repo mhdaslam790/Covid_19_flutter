@@ -11,19 +11,32 @@ import '../widgets/help_card.dart';
 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final covidData;
+  const HomeScreen({Key? key, this.covidData}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  CurrentLocation loc = CurrentLocation();
+  late int confirmedCase;
+  late int totalDeath;
+  late int totalRecovery;
+  late int newCase;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loc.getLocation();
+    updateUI(widget.covidData);
+
+  }
+  void updateUI(dynamic covidData) async
+  {
+    confirmedCase = covidData['data']['latest_data']['confirmed'];
+    totalDeath = covidData['data']['latest_data']['deaths'];
+    totalRecovery = covidData['data']['latest_data']['recovered'];
+    newCase = covidData['data']['today']['confirmed'];
+
   }
   @override
   Widget build(BuildContext context) {
@@ -54,10 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 runSpacing: 20,
                 spacing: 20,
                 children: <Widget>[
-                  InfoCard(title: 'Confirmed Cases',number: 1233,color: Color(0xFFFF9C00),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
-                  InfoCard(title: 'Total Death',number: 453,color: Color(0xFFFF2D55),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
-                  InfoCard(title: 'Total Recovered',number: 645,color: Color(0xFF50E3C2),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
-                  InfoCard(title: 'New Cases',number: 133,color: Color(0xFF5856D6),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));},),
+                  InfoCard(title: 'Confirmed Cases',number: confirmedCase,color: Color(0xFFFF9C00),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
+                  InfoCard(title: 'Total Death',number: totalDeath,color: Color(0xFFFF2D55),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
+                  InfoCard(title: 'Total Recovered',number: totalRecovery,color: Color(0xFF50E3C2),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
+                  InfoCard(title: 'New Cases',number: newCase,color: Color(0xFF5856D6),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));},),
 
 
                 ],

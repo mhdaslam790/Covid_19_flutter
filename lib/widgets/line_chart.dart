@@ -5,18 +5,21 @@ import 'package:myflutter1/constants.dart';
 class LineReportChart extends StatelessWidget {
   List<FlSpot> getSports() {
     return [
-      FlSpot(0, .5),
-      FlSpot(1, 1.5),
-      FlSpot(2, .5),
-      FlSpot(3, .7),
-      FlSpot(4, .2),
-      FlSpot(5, 2),
-      FlSpot(6, 1.5),
-      FlSpot(7, 1.7),
-      FlSpot(8, 1),
-      FlSpot(9, 2.8),
-      FlSpot(10, 2.5),
-      FlSpot(11, 2.65),
+       FlSpot(0, 26948874%100000),
+       FlSpot(1, 27157795%100000),
+       FlSpot(2, 27369093%100000),
+       FlSpot(3, 27555457%100000),
+       FlSpot(4, 2729247%100000),
+       FlSpot(5, 27894800%100000),
+       FlSpot(6, 28894800%100000),
+       FlSpot(7, 29894800%100000),
+      FlSpot(8, 31894800%100000),
+      FlSpot(9, 33894800%100000),
+      //  FlSpot(7, 1.7),
+      // FlSpot(8, 1),
+      // FlSpot(9, 2.8),
+      // FlSpot(10, 2.5),
+      // FlSpot(11, 2.65),
     ];
 
   }
