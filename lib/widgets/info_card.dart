@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myflutter1/widgets/line_chart.dart';
 import 'package:myflutter1/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 class InfoCard extends StatelessWidget {
@@ -55,8 +54,9 @@ class InfoCard extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Row(
                       children: <Widget>[
+
                         Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.only(left: 20.0),
                           child: RichText(text: TextSpan(
                               style:TextStyle(
                                 color: kTextColor,
@@ -73,8 +73,7 @@ class InfoCard extends StatelessWidget {
                           ),
                           ),
                         ),
-                        Expanded(child: LineReportChart()
-                        ),
+
                       ],
                     ),
                   )

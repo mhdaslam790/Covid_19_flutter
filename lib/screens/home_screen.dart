@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:myflutter1/constants.dart';
 import 'package:myflutter1/screens/detail_screen.dart';
-import 'package:myflutter1/services/location.dart';
+import 'package:myflutter1/services/countrydatabyname.dart';
 import 'package:myflutter1/widgets/info_card.dart';
 import 'package:myflutter1/widgets/prevention_card.dart';
 import '../widgets/help_card.dart';
@@ -19,10 +19,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final myController = TextEditingController();
   late int confirmedCase;
   late int totalDeath;
   late int totalRecovery;
   late int newCase;
+  late String country;
+  late bool check=false;
   @override
   void initState() {
     // TODO: implement initState
@@ -32,10 +35,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   void updateUI(dynamic covidData) async
   {
-    confirmedCase = covidData['data']['latest_data']['confirmed'];
-    totalDeath = covidData['data']['latest_data']['deaths'];
-    totalRecovery = covidData['data']['latest_data']['recovered'];
-    newCase = covidData['data']['today']['confirmed'];
+   setState(() {
+     confirmedCase = covidData['data']['latest_data']['confirmed'];
+     totalDeath = covidData['data']['latest_data']['deaths'];
+     totalRecovery = covidData['data']['latest_data']['recovered'];
+     newCase = covidData['data']['today']['confirmed'];
+     country = covidData['data']['name'];
+   });
 
   }
   @override
@@ -46,13 +52,93 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: kPrimaryColor.withOpacity(.03),
         leading: IconButton(onPressed: (){}, icon:  SvgPicture.asset("assets/icons/menu.svg")),
         actions: <Widget>[
-          IconButton(onPressed: (){}, icon: SvgPicture.asset("assets/icons/search.svg"))
+          IconButton(onPressed: (){
+            showCupertinoDialog(context: context, 
+                builder: (BuildContext context)=> AlertDialog(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  title: Text('Enter Country Name',
+                  style: TextStyle(
+                    color:  kTextMediumColor,
+                  ),
+                  ),
+                  content:
+                      TextField(
+                        // onChanged: (value){
+                        //   countryName = value;
+                        //   print(countryName);
+                        // },
+                        controller: myController,
+                        cursorColor: kPrimaryColor,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color:kPrimaryColor,
+                            )
+                          ),
+                          labelText: 'Country Name',
+                          labelStyle: TextStyle(
+                            color: kTextMediumColor,
+                          ),
+                        ),
+                      ),
+                  actions: [
+                    TextButton(onPressed:  () async {
+                      var dataByCountryName = await CountryData().getCountryDataByName(myController.text);
+                      if(dataByCountryName!=null)
+                        {
+                          updateUI(dataByCountryName);
+                        }
+                      Navigator.pop(context);
+                    },
+                        child:Text('OK',
+                        style: TextStyle(
+                          color: kPrimaryColor,
+                          ),
+                        ),
+                    ),
+                    TextButton(onPressed: (){
+                      Navigator.pop(context, 'Cancel');
+                    },
+                        child: Text('cancel',
+                        style: TextStyle(
+                          color: kPrimaryColor,
+                        ),),)
+                  ],
+                ),
+
+            );
+          }, icon: SvgPicture.asset("assets/icons/search.svg"))
 
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
+            RichText(text: TextSpan(
+              style: TextStyle(
+                color: kTextColor,
+              ),
+              children: [
+                TextSpan(
+                  text: 'Country Name: ',
+                  style:Theme.of(context).textTheme.headline1,
+                ),
+                TextSpan(
+                  text: country,
+                  style: Theme.of(context).textTheme.headline1,
+                )
+              ]
+            ),
+            ),
             Container(
               padding: EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
               width: double.infinity,
@@ -102,9 +188,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-
 
 
 

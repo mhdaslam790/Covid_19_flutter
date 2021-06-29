@@ -19,9 +19,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
     getCovidData();
   }
 
-  void getCovidData()  async
+  Future getCovidData()  async
   {
-    var covidData = await CurrentLocation().getData();
+    var covidData = await CurrentLocation().getLocation();
     // Navigator.pushReplacement replace current screen with next screen
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return HomeScreen(covidData: covidData);
