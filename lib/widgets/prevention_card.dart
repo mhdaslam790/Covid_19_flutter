@@ -15,6 +15,9 @@ class PreventionCard extends StatelessWidget {
     return Column(
       children: <Widget>[
         SvgPicture.asset(image),
+        SizedBox(
+          height: 5,
+        ),
         Text(title,
           style: TextStyle(color: kPrimaryColor,
               fontWeight: FontWeight.bold),)

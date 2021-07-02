@@ -7,6 +7,7 @@ import 'package:myflutter1/services/countrydatabyname.dart';
 import 'package:myflutter1/widgets/info_card.dart';
 import 'package:myflutter1/widgets/prevention_card.dart';
 import '../widgets/help_card.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 
 
@@ -48,9 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: kPrimaryColor),
         elevation: 0,
         backgroundColor: kPrimaryColor.withOpacity(.03),
-        leading: IconButton(onPressed: (){}, icon:  SvgPicture.asset("assets/icons/menu.svg")),
         actions: <Widget>[
           IconButton(onPressed: (){
             showCupertinoDialog(context: context, 
@@ -113,32 +114,51 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
             );
-          }, icon: SvgPicture.asset("assets/icons/search.svg"))
-
+          },
+              icon: SvgPicture.asset("assets/icons/search.svg"))
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children:  <Widget>[
+            Container(
+              height: 100,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  border: Border(
+                  ),
+                  color: kPrimaryColor,
+                ),
+                child: Text(
+                  'Drawer Menu',
+                  style: TextStyle(
+                    color: kTextColor.withOpacity(.5),
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.location_on),
+              title: Text('My Location status'),
+            ),
+            // ListTile(
+            //   leading: Icon(Icons.settings),
+            //   title: Text('Settings'),
+            // ),
+            // ListTile(
+            //   leading: Icon(Icons.settings),
+            //   title: Text('Settings'),
+            // ),
+
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            RichText(text: TextSpan(
-              style: TextStyle(
-                color: kTextColor,
-              ),
-              children: [
-                TextSpan(
-                  text: 'Country Name: ',
-                  style:Theme.of(context).textTheme.headline1,
-                ),
-                TextSpan(
-                  text: country,
-                  style: Theme.of(context).textTheme.headline1,
-                )
-              ]
-            ),
-            ),
+
             Container(
               padding: EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
               width: double.infinity,
@@ -152,13 +172,31 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Wrap(
                 runSpacing: 20,
                 spacing: 20,
+                alignment: WrapAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    height: 10,
+                  ),
+                  RichText(text: TextSpan(
+                      style: TextStyle(
+                        color: kTextColor,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Country Name: ',
+                          style:Theme.of(context).textTheme.headline1,
+                        ),
+                        TextSpan(
+                          text: country,
+                          style: Theme.of(context).textTheme.headline1,
+                        )
+                      ]
+                  ),
+                  ),
                   InfoCard(title: 'Confirmed Cases',number: confirmedCase,color: Color(0xFFFF9C00),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
                   InfoCard(title: 'Total Death',number: totalDeath,color: Color(0xFFFF2D55),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
                   InfoCard(title: 'Total Recovered',number: totalRecovery,color: Color(0xFF50E3C2),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
                   InfoCard(title: 'New Cases',number: newCase,color: Color(0xFF5856D6),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));},),
-
-
                 ],
               ),
             ),

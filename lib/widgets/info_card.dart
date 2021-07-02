@@ -19,7 +19,7 @@ class InfoCard extends StatelessWidget {
             child: Container(
               width: constraints.maxWidth/2 -10,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).accentColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
