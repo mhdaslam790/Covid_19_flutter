@@ -2,18 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:myflutter1/constants.dart';
+import 'package:myflutter1/services/detailScreenData.dart';
 import 'package:myflutter1/screens/detail_screen.dart';
 import 'package:myflutter1/services/countrydatabyname.dart';
+import 'package:myflutter1/services/listdata.dart';
+import 'package:myflutter1/services/location.dart';
 import 'package:myflutter1/widgets/info_card.dart';
 import 'package:myflutter1/widgets/prevention_card.dart';
 import '../widgets/help_card.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 
 
 class HomeScreen extends StatefulWidget {
-  final covidData;
-  const HomeScreen({Key? key, this.covidData}) : super(key: key);
+  final ListData covidData;
+
+  const HomeScreen({Key? key, required this.covidData}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -27,11 +30,17 @@ class _HomeScreenState extends State<HomeScreen> {
   late int newCase;
   late String country;
   late bool check=false;
+  List<double> dailyConfirmedCases = [];
+  List<double> dailyRecoveryCases = [];
+  List<double> dailyDeathCases = [];
+  List<double> dailyActiveCases = [];
+  List<String> stringDate = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    updateUI(widget.covidData);
+    updateUI(widget.covidData.decodeData);
+    updateDetailScreen(widget.covidData.data);
 
   }
   void updateUI(dynamic covidData) async
@@ -43,7 +52,22 @@ class _HomeScreenState extends State<HomeScreen> {
      newCase = covidData['data']['today']['confirmed'];
      country = covidData['data']['name'];
    });
-
+  }
+  void updateDetailScreen(List<DetailScreenData> confirmed)
+  {
+    dailyConfirmedCases.clear();
+    dailyRecoveryCases.clear();
+    dailyDeathCases.clear();
+    dailyActiveCases.clear();
+    stringDate.clear();
+    for(int i=0;i<confirmed.length;i++)
+    {
+      dailyConfirmedCases.add(confirmed[i].dailyConfirmedCases.toDouble());
+      dailyRecoveryCases.add(confirmed[i].dailyRecoveryCases.toDouble());
+      dailyDeathCases.add(confirmed[i].dailyDeathCases.toDouble());
+      dailyActiveCases.add(confirmed[i].dailyActiveCases.toDouble());
+      stringDate.add(confirmed[i].dateTime);
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -90,11 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                   actions: [
                     TextButton(onPressed:  () async {
-                      var dataByCountryName = await CountryData().getCountryDataByName(myController.text);
-                      if(dataByCountryName!=null)
-                        {
-                          updateUI(dataByCountryName);
-                        }
+                      ListData dataByCountryName = await CountryDataByName().getCountryDataByName(myController.text);
+                          updateUI(dataByCountryName.decodeData);
+                          updateDetailScreen(dataByCountryName.data);
                       Navigator.pop(context);
                     },
                         child:Text('OK',
@@ -123,25 +145,34 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children:  <Widget>[
             Container(
-              height: 100,
+              height: 150,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   border: Border(
                   ),
                   color: kPrimaryColor,
                 ),
-                child: Text(
-                  'Drawer Menu',
-                  style: TextStyle(
-                    color: kTextColor.withOpacity(.5),
-                    fontSize: 24,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25,horizontal: 5),
+                  child: Text(
+                    'Drawer Menu',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
                   ),
                 ),
               ),
             ),
             ListTile(
               leading: Icon(Icons.location_on),
-              title: Text('My Location status'),
+              title: Text('My Location Status'),
+              onTap: () async {
+                ListData locationData = await CurrentLocation().getLocation();
+                updateUI(locationData.decodeData);
+                updateDetailScreen(locationData.data);
+                Navigator.pop(context);
+              },
             ),
             // ListTile(
             //   leading: Icon(Icons.settings),
@@ -193,10 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ]
                   ),
                   ),
-                  InfoCard(title: 'Confirmed Cases',number: confirmedCase,color: Color(0xFFFF9C00),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
-                  InfoCard(title: 'Total Death',number: totalDeath,color: Color(0xFFFF2D55),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
-                  InfoCard(title: 'Total Recovered',number: totalRecovery,color: Color(0xFF50E3C2),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));}),
-                  InfoCard(title: 'New Cases',number: newCase,color: Color(0xFF5856D6),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen()));},),
+                  InfoCard(title: 'Confirmed Cases',number: confirmedCase,color: Color(0xFFFF9C00),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen(data: dailyConfirmedCases,stringDate: stringDate,title: 'Daily Confirmed Cases',)));}),
+                  InfoCard(title: 'Total Death',number: totalDeath,color: Color(0xFFFF2D55),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen(data: dailyDeathCases,stringDate: stringDate,title: 'Daily Death Cases',)));}),
+                  InfoCard(title: 'Total Recovered',number: totalRecovery,color: Color(0xFF50E3C2),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen(data: dailyRecoveryCases,stringDate: stringDate,title: 'Daily Recovery Cases')));}),
+                  InfoCard(title: 'New Cases',number: newCase,color: Color(0xFF5856D6),function: (){ Navigator.push(context, MaterialPageRoute(builder:  (context) =>   DetailScreen(data: dailyActiveCases,stringDate: stringDate,title: 'Daily Active Cases',)));},),
                 ],
               ),
             ),

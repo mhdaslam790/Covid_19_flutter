@@ -1,3 +1,5 @@
+import 'package:myflutter1/services/listdata.dart';
+
 import 'countrycode.dart';
 import 'package:geolocator/geolocator.dart';
 import 'coviddata.dart';
@@ -10,7 +12,7 @@ class CurrentLocation
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.low);
       var countryName = await GetCountryCode().getCountryCode(position.latitude, position.longitude);
-      var locationData = await CovidData().getData(countryName);
+      ListData locationData = await CovidData().getData(countryName);
       return locationData;
     }
     catch(e)

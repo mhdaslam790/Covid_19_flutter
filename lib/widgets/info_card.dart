@@ -6,6 +6,7 @@ class InfoCard extends StatelessWidget {
   final int number;
   final Color color;
   final void Function() function;
+
   const InfoCard({
     required this.title, required this.number, required this.color, required this.function,
   });
